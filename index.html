@@ -14,12 +14,15 @@
         </style>
     </head>
     <body>
-         <a href="http://github.com/wavded/js-shapefile-to-geojson"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+        <a href="http://github.com/wavded/js-shapefile-to-geojson"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
         <h2>js-shapefile-to-geojson Demo Page</h2>
         <p>Pure client-side JavaScript (no server side code) parsing of shapefiles and dbase files to GeoJSON format displayed using OpenLayers.</p>
         <div id="map"></div>
         <p>View project at <a href="http://github.com/wavded/js-shapefile-to-geojson">http://github.com/wavded/js-shapefile-to-geojson</a>.
+        <textarea name="geojson" id="geojson" cols="30" rows="10"></textarea>
         <script src="http://rs1.adc4gis.com/js/openlayers/2.9.1/OpenLayers-Proj4.js"></script>
+        <script src="jquery.js" type="text/javascript"></script>
+        <script src="jquery.extend.js" type="text/javascript"></script>
         <script src="stream.js"></script>
         <script src="shapefile.js"></script>
         <script src="dbf.js"></script>
@@ -35,15 +38,22 @@
                 vector = new OpenLayers.Layer.Vector("Converted"),
 
                 shapefile = new Shapefile({
-                    shp: "testdata/world.shp",
-                    dbf: "testdata/world.dbf"
+                    shp: "testdata/county_region.shp",
+                    dbf:  "testdata/county_region.dbf"
                 }, function(data){
                     var features = parser.read(data.geojson);
                     vector.addFeatures(features);
                     map.zoomToExtent(vector.getDataExtent());
 
-                    console.log("took",new Date - starttime,"milliseconds")
-                    console.log(data);
+                    console.log("took",new Date - starttime,"milliseconds");
+                    console.log(data.geojson);
+                    console.log(data.geojson.features);
+//                    var singleFeatureName = features.features[0].properties.NAME;
+//                    console.log(singleFeatureName);
+                    $(function() {
+                       $('#geojson').val(JSON.stringify(data.geojson.features));
+                    });
+
                 })
 
             map.addLayer(vector);
